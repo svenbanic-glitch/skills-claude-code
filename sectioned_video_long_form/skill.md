@@ -182,4 +182,12 @@ def submit_long(prompts: list[str], source_image: str, *, backend: str = "ltx",
 - `CLSNPNSFW_SECTIONED_12x5s.json` — earlier WAN sectioned (pre-FIXED)
 
 ## Common Pitfalls
-_(empty — populate with experience. Likely candidates: section drift accumulation past section 6 — re-anchor with reference frame; per-section LoRA mismatch causes flicker between sections; bypassed sections still occupying VRAM if not properly excluded; final concat losing audio if per-section audio differs; LTX vs WAN intermediate frame interpretation — last-frame extraction node names differ; VHS_VideoCombine final MP4 silently truncated if disk space < projected size; color drift mitigation patches conflict if both Color Match and IC-LoRA enabled simultaneously)_
+
+**MODEL AVAILABILITY (verified 2026-05-02):**
+- 🚨 **`ltx-2.3-22b-dev.safetensors` MISSING** — LTX backend will not run until downloaded. See `sina_video_ltx23` skill for download command.
+- ✅ WAN 2.2 backend models present (HIGH+LOW UNet, CLIP, VAE) — use `reference_workflow_wan.json` for first runs.
+- ✅ All WAN LoRAs (`WAN2.2-HighNoise_Pussyv1`, `Sensual_fingering`, etc.) verified present.
+
+**Until LTX checkpoint is downloaded: only WAN backend is operational.**
+
+_(other pitfalls — populate with experience: section drift accumulation past section 6 — re-anchor with reference frame; per-section LoRA mismatch causes flicker between sections; bypassed sections still occupying VRAM if not properly excluded; final concat losing audio if per-section audio differs; LTX vs WAN intermediate frame interpretation — last-frame extraction node names differ; VHS_VideoCombine final MP4 silently truncated if disk space < projected size; color drift mitigation patches conflict if both Color Match and IC-LoRA enabled simultaneously)_

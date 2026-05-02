@@ -190,4 +190,19 @@ def submit(prompt: str, source_image: str, *, seed: int = None,
 For unwrapped/full-detail LTX pipeline, prefer `CLSNP_LTX23_SECTIONED_12x5s.json` as donor when building variants.
 
 ## Common Pitfalls
-_(empty — populate with experience. Likely candidates: subgraph proxyWidgets not propagating after graph→API conversion (must expand subgraph in UI first); LTX 2.3 vs 2.0 LoRA incompatibility (`ltx-2-19b` LoRAs don't work on `ltx-2.3-22b`); ManualSigmas values for pass 1 vs pass 2 must differ — pass 1 typically `[1.0 ... 0.0]`, pass 2 `[0.5 ... 0.0]`; LatentUpscaleModelLoader missing model causes OOM-like silent failure; gemma_3_12B text encoder requires significant RAM at fp8)_
+
+**MODEL AVAILABILITY (verified 2026-05-02):**
+- 🚨 **`ltx-2.3-22b-dev.safetensors` IS NOT DOWNLOADED** on this pod — only `.metadata.json` exists. Workflow will fail at `CheckpointLoaderSimple`. Need to download from HuggingFace before this skill works. Check donor's `MarkdownNote` nodes for the source URL.
+- 🚨 **`ltx-2-19b-dev-fp8.safetensors`** also missing (only metadata).
+- ✅ `ltx-2.3-22b-distilled-lora-384.safetensors` (distillation LoRA) verified present.
+- ✅ All scene LoRAs (`SexGod_Nudity_LTX23_v2_0`, `LTX-2.3 - Orgasm`, `msltx-3fingering-step00005000_comfy`, etc.) verified present.
+
+**Action required before first run:** download the LTX 2.3 base checkpoint, e.g.:
+```bash
+huggingface-cli download Lightricks/LTX-Video-2.3-22B \
+  ltx-2.3-22b-dev.safetensors \
+  --local-dir /workspace/runpod-slim/ComfyUI/models/checkpoints/
+```
+(File is ~22GB. Confirm with user before pulling.)
+
+_(other pitfalls — populate with experience: subgraph proxyWidgets not propagating after graph→API conversion (must expand subgraph in UI first); LTX 2.3 vs 2.0 LoRA incompatibility (`ltx-2-19b` LoRAs don't work on `ltx-2.3-22b`); ManualSigmas values for pass 1 vs pass 2 must differ — pass 1 typically `[1.0 ... 0.0]`, pass 2 `[0.5 ... 0.0]`; LatentUpscaleModelLoader missing model causes OOM-like silent failure; gemma_3_12B text encoder requires significant RAM at fp8)_

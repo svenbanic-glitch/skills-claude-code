@@ -221,4 +221,21 @@ def submit(source_video: str, sina_ref_image: str, *, prompt: str = None,
 For face-only swap (not full body): use `Flux2 Klein 9b Face Swap.json` or `flux2-klein-editing+face swap.json` (Flux Klein face swap, no WAN Animate stage).
 
 ## Common Pitfalls
-_(empty — populate with experience. Likely candidates: source video FPS mismatch (force_rate must match expected output); SAM3 segmentation failing on multi-person videos (works best with single-subject input); pre-render Flux Klein face NOT carrying through to WAN Animate if CLIPVision conditioning weight too low; WanAnimate_relight LoRA strength < 1.0 produces obvious cutout look; lightx2v 480p distill incompatible with 720p WAN inference (use 480p source resolution); GetNode/SetNode wiring breaks if any node is bypassed in the chain — verify node IDs match across the graph)_
+
+**MODEL AVAILABILITY (verified 2026-05-02):**
+- 🚨 **`Wan2_2-Animate-14B_fp8_e4m3fn_scaled_KJ.safetensors` MISSING** — only `.metadata.json` exists in `/models/diffusion_models/`. Workflow will fail at WAN Animate UNETLoader.
+- 🚨 **`Wan2_2-Animate-14B_fp8_scaled_e4m3fn_KJ_v2.safetensors`** (v2 variant) also missing.
+- ✅ Flux Klein pre-render stage models all present (`flux-2-klein-9b`, `qwen_3_8b_fp8mixed`, `flux2-vae`).
+- ✅ `WanAnimate_relight_lora_fp16.safetensors` (relight LoRA) present.
+- ✅ `lightx2v_I2V_14B_480p_cfg_step_distill_rank64_bf16.safetensors` (distill LoRA) present.
+- ✅ All Sina Flux Klein LoRAs (`sinafluxneu_000000800`, `FLUXklein_slider_anatomy`, etc.) present.
+
+**Action required before first run:** download WAN Animate 14B from KJ's HuggingFace:
+```bash
+huggingface-cli download Kijai/WanVideo_comfy \
+  Wan2_2-Animate-14B_fp8_e4m3fn_scaled_KJ.safetensors \
+  --local-dir /workspace/runpod-slim/ComfyUI/models/diffusion_models/
+```
+(File is ~14GB. Confirm with user before pulling.)
+
+_(other pitfalls — populate with experience: source video FPS mismatch (force_rate must match expected output); SAM3 segmentation failing on multi-person videos (works best with single-subject input); pre-render Flux Klein face NOT carrying through to WAN Animate if CLIPVision conditioning weight too low; WanAnimate_relight LoRA strength < 1.0 produces obvious cutout look; lightx2v 480p distill incompatible with 720p WAN inference (use 480p source resolution); GetNode/SetNode wiring breaks if any node is bypassed in the chain — verify node IDs match across the graph)_

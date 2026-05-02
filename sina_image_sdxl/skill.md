@@ -184,4 +184,10 @@ def submit(prompt: str, *, ckpt_keyword: str = "lustify", seed: int = None,
 - `SDXL mopMixWorkflows_BigASP25.json` — BigASP-tagged variant
 
 ## Common Pitfalls
-_(empty — populate with experience. Likely candidates: trigger word case sensitivity (`sinahohenheim women` vs `sinahohenheim_women`), DMD vs non-DMD CFG mismatch causing washed-out outputs, SDXLEmptyLatentSizePicker+ resolution string format strict ("896x1152 (0.78)" with space), illustriousRealism baked VAE conflicting with external VAE if loaded, score_X Pony tags only working with gonzalomoXLFluxPony)_
+
+**MODEL AVAILABILITY (verified 2026-05-02):**
+- ⚠️ `sinasdxlmy_first_lora_v1_000002500.safetensors` and all 4 variants (` (1)`, `_1`, `_2`, `_4`) — only `.metadata.json` exists, **`.safetensors` files MISSING**. Default to `sdxlsina_hohenheim_women_save-2999.safetensors` instead (verified available).
+- ✅ All 9 SDXL checkpoints (`lustifySDXLNSFW_apexV8`, `epicrealismXL_pureFix`, `juggernautXL_ragnarokBy`, `illustriousRealismBy_v10VAE`, `intorealismUltra_v10`, etc.) verified present.
+- ✅ `skin_imperfection_sdxl`, `more_details_sdxl`, `add-detail-xl`, `RealSkin_xxXL_v1` all verified present.
+
+_(other pitfalls — populate with experience: trigger word case sensitivity (`sinahohenheim women` vs `sinahohenheim_women`), DMD vs non-DMD CFG mismatch causing washed-out outputs, SDXLEmptyLatentSizePicker+ resolution string format strict ("896x1152 (0.78)" with space), illustriousRealism baked VAE conflicting with external VAE if loaded, score_X Pony tags only working with gonzalomoXLFluxPony)_

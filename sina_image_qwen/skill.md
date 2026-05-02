@@ -50,9 +50,13 @@ Qwen Image Sina pipeline. Reference: `QWEN Nsfw + Klein faceswap - icekiub v1.js
 
 | Slot | File | Notes |
 |---|---|---|
-| UNet | `qwen_image_fp8_hq.safetensors` | in `/models/diffusion_models/` |
+| Checkpoint | `qwen_image_fp8_hq.safetensors` | in `/models/checkpoints/` — **load via `CheckpointLoaderSimple`, NOT `UNETLoader`** (file lives in checkpoints/ on this pod) |
 | CLIP | `qwen_2.5_vl_7b_fp8_scaled.safetensors` (type=`qwen_image`) | in `/models/text_encoders/` |
 | VAE | `qwen_image_vae.safetensors` | Qwen-specific VAE |
+
+The donor workflow uses `UNETLoader` because the file may be symlinked / in a different location on its origin system. On this pod, the file is in `checkpoints/` so either:
+- Use `CheckpointLoaderSimple` (preferred — cleaner, gets MODEL+CLIP+VAE in one node)
+- Symlink: `ln -s /workspace/runpod-slim/ComfyUI/models/checkpoints/qwen_image_fp8_hq.safetensors /workspace/runpod-slim/ComfyUI/models/diffusion_models/qwen_image_fp8_hq.safetensors`
 
 GGUF alternatives: `qwen-image-2512-Q4_K_M.gguf` (use `UnetLoaderGGUF`).
 
@@ -141,4 +145,9 @@ def submit(prompt: str, *, seed: int = None, sina_lora: str = "sina qwen_0000034
 If user asks for "Qwen edit" (img2img on existing image): copy `ReferenceLatent` pattern from `sina_image_fluxklein` skill — replace the UNet/CLIP/VAE with Qwen counterparts.
 
 ## Common Pitfalls
-_(empty — populate with experience. Likely candidates: Lightning 8-step LoRA REQUIRED at strength 1.0 — without it, 10-step samples produce noise; ClownsharKSampler_Beta widgets_values mapping is non-obvious — always verify via /object_info; Qwen CLIP type must be `qwen_image` not `qwen` or `qwen2`; Qwen VAE NOT interchangeable with `ae.safetensors` or `flux2-vae.safetensors`; CFG > 1.5 with Lightning LoRA produces washed-out outputs)_
+
+**MODEL AVAILABILITY (verified 2026-05-02):**
+- ⚠️ `qwen_image_fp8_hq.safetensors` lives in `/models/checkpoints/` not `/models/diffusion_models/` — donor `UNETLoader` reference will fail. Use `CheckpointLoaderSimple` or symlink (see Required Models above).
+- ✅ `qwen_2.5_vl_7b_fp8_scaled.safetensors` (CLIP), `qwen_image_vae.safetensors` (VAE), `Qwen-Image-Lightning-8steps-V2.0-bf16.safetensors`, `Qwen-MysticXXX-v1.safetensors`, all `sina qwen*` variants verified present.
+
+_(other pitfalls — populate with experience: Lightning 8-step LoRA REQUIRED at strength 1.0 — without it, 10-step samples produce noise; ClownsharKSampler_Beta widgets_values mapping is non-obvious — always verify via /object_info; Qwen CLIP type must be `qwen_image` not `qwen` or `qwen2`; Qwen VAE NOT interchangeable with `ae.safetensors` or `flux2-vae.safetensors`; CFG > 1.5 with Lightning LoRA produces washed-out outputs)_
