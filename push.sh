@@ -6,9 +6,10 @@ cd /workspace/.claude/skills
 # the repo keeps a synced copy under skills/agents/.
 if [ -d /workspace/.claude/agents ]; then
     mkdir -p ./agents
-    rsync -a --delete \
-        --include="*.md" --exclude="*" \
-        /workspace/.claude/agents/ ./agents/
+    # Remove stale .md files in mirror (handles deletions)
+    find ./agents -maxdepth 1 -type f -name "*.md" -delete
+    # Copy current agent .md files
+    cp /workspace/.claude/agents/*.md ./agents/ 2>/dev/null || true
 fi
 
 git add .
